@@ -1,0 +1,46 @@
+environment:
+  name: bae-tangrampro
+aws:
+  cluster_region: us-gov-east-1
+  s3_bucket: 123131313213213-us-gov-east-1-app
+kops:
+  cluster:
+    master-size: t3.large
+    zones: us-gov-east-1a
+    image: ami-30e00c41
+    vpc: vpc-03aad776c27e62323
+    network-cidr: 172.12.21.323/23
+    kubernetes-version: 1.16.13
+    subnets: subnet-07ed3424242343428
+    utility-subnets: subnet-07ed3424242343428
+    egress: External
+    topology: private
+    networking: calico
+    api-loadbalancer-type: internal
+    spec:
+      additionalPolicies:
+        master: |
+          [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt"
+              ],
+              "Resource": "arn:aws-us-gov:kms:us-gov-east-1:123131313213213:key/1fdb8e22-6b85-4a65-a2334-1f8d2932131312"
+            }
+          ]
+        node: |
+          [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt"
+              ],
+              "Resource": "arn:aws-us-gov:kms:us-gov-east-1:123131313213213:key/1fdb8e22-6b85-4a65-a2334-1f8d2932131312"
+            }
+          ]
+      kubelet:
+        imagePullProgressDeadline: 15m
+      useHostCertificates: true
